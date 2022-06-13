@@ -10,7 +10,7 @@ def main():
         hostname = t['teddit']['instance']
         del t['teddit']['instance']
 
-    assert not hostname.startswith('https:'), 'Instance cannot being with https://. Either use http:// or only the host'
+    assert not hostname.startswith('https:'), 'Instance cannot begin with https://. Either use http:// or only the host'
     if not hostname.startswith('http://'):
         hostname = 'http://' + hostname
 
