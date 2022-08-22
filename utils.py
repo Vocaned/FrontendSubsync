@@ -3,6 +3,12 @@ import toml
 import requests
 import json
 
+def str_js(v) -> str:
+    """Stringify an object with js[on] compatible booleans"""
+    if isinstance(v, bool):
+        return str(v).lower()
+    return str(v)
+
 def ensure_output():
     if not os.path.isdir('output'):
         if os.path.exists('output'):
@@ -27,13 +33,13 @@ def cache_subs():
 
     try:
         for sub in subs:
-            if sub in entries:
+            if sub.lower() in entries:
                 continue
             print(f'Getting info: {sub}')
 
             about = requests.get(f'https://reddit.com/r/{sub}/about.json', headers={'User-Agent': 'Infinity sublist gen'}).json()
-            if 'data' not in about:
-                Exception(about)
+            if not 'data' in about or 'error' in about:
+                raise Exception(f'{sub}: {about}')
             about = about['data']
             entries[sub.lower()] = {
                 'name': about['display_name'],

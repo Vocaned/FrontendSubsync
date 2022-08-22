@@ -1,7 +1,5 @@
 [teddit]
 # Possible values can be found in the settings of the teddit instance.
-instance = 'teddit.net'
-
 theme = 'dark'
 flairs = true
 nsfw_enabled = true
