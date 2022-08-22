@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import toml
 import requests
 import json
@@ -10,15 +10,7 @@ def str_js(v) -> str:
     return str(v)
 
 def ensure_output():
-    if not os.path.isdir('output'):
-        if os.path.exists('output'):
-            raise Exception('output already exists, but is a file instead of a directory.')
-        os.mkdir('output')
-        os.mkdir('output/cache')
-    if not os.path.isdir('output/cache'):
-        if os.path.exists('output/cache'):
-            raise Exception('output/cache already exists, but is a file instead of a directory.')
-        os.mkdir('output/cache')
+    Path('output', 'cache').mkdir(parents=True, exist_ok=True)
 
 def cache_subs():
     '''Get subreddit ID and icon from reddit api, and save to cache'''
@@ -26,9 +18,11 @@ def cache_subs():
         t = toml.load(f)
         subs = t['reddit']['subscriptions']
 
+    sub_cache = Path('output', 'cache', 'sub_id.json')
+
     entries = {}
-    if os.path.exists('output/cache/sub_id.json'):
-        with open('output/cache/sub_id.json', 'r', encoding='utf-8') as f:
+    if sub_cache.exists():
+        with open(sub_cache, 'r', encoding='utf-8') as f:
             entries = json.load(f)
 
     try:
@@ -47,5 +41,5 @@ def cache_subs():
                 'iconUrl': about['community_icon']
             }
     finally:
-        with open('output/cache/sub_id.json', 'w', encoding='utf-8') as f:
+        with open(sub_cache, 'w', encoding='utf-8') as f:
             json.dump(entries, f)
