@@ -1,7 +1,7 @@
 import json
 import toml
 
-from utils import ensure_output
+from utils import ensure_output, cache_subs
 
 def main():
     with open('config.toml', 'r', encoding='utf-8') as f:
@@ -37,4 +37,5 @@ def main():
 
 if __name__ == '__main__':
     ensure_output()
+    cache_subs()
     main()
