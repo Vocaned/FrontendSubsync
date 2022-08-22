@@ -1,39 +1,26 @@
-import json
 import toml
 
-from utils import ensure_output, cache_subs
+from utils import ensure_output, cache_subs, str_js
 
 def main():
     with open('config.toml', 'r', encoding='utf-8') as f:
         t = toml.load(f)
         subs = t['reddit']['subscriptions']
-        hostname = t['teddit']['instance']
-        del t['teddit']['instance']
-
-    assert not hostname.startswith('https:'), 'Instance cannot begin with https://. Either use http:// or only the host'
-    if not hostname.startswith('http://'):
-        hostname = 'http://' + hostname
 
     opts = t['teddit']
 
     opts['subbed_subreddits'] = 'j:["' + '","'.join(subs) + '"]'
 
-    cookies = []
+    cookies = ''
 
     for k,v in opts.items():
-        cookies.append({
-            'Name raw': k,
-            'Content raw': v,
-            'Host raw': hostname,
-            'Path raw': '/',
-            'HTTP only raw': 'true',
-            'Expires raw': '2147483647'
-        })
+        k,v = (str_js(k),str_js(v))
+        cookies += f"document.cookie = '{k}={v};expires=2147483647;path=/;SameSite=Strict;'\n"
 
-    with open('output/teddit_cookies.json', 'w', encoding='utf-8') as f:
-        json.dump(cookies, f)
+    with open('output/teddit_cookies.js', 'w', encoding='utf-8') as f:
+        f.write(cookies)
 
-    print('Cookies written to teddit_cookies.json. Use Cookie Quick Manager to import them to your browser.')
+    print('Cookies written to teddit_cookies.js. Copy the script contents to your developer tools console.')
 
 if __name__ == '__main__':
     ensure_output()
