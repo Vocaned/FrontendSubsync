@@ -9,7 +9,7 @@ def main():
 
     opts = t['teddit']
 
-    opts['subbed_subreddits'] = f'j:["{",".join(subs)}"]'
+    opts['subbed_subreddits'] = 'j:["' + '","'.join(subs) + '"]'
 
     cookies = ''
 
