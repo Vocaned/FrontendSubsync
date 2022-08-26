@@ -1,7 +1,7 @@
 from pathlib import Path
+import json
 import toml
 import requests
-import json
 
 def str_js(v) -> str:
     """Stringify an object with js[on] compatible booleans"""
